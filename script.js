@@ -11,16 +11,14 @@ const updateBtn = document.querySelector("#btn");
 
 function getProfile() {
   fetch(url)
+    .then(handleErrors)
     .then((res) => {
       console.log(res);
-      return res.json();
-    })
-    .then((data) => {
-      console.log(data);
+      var data = res.json();
       var results = data.results;
-      console.log(results[0]);
-      updateProfile(results[0]);
+      return results;
     })
+    .then(updateProfile(results[0]))
     .catch((err) => {
       console.log(err);
     });
@@ -34,6 +32,13 @@ function updateProfile(data) {
   phone.innerHTML = data.phone;
   age.innerHTML = data.dob.age;
   city.innerHTML = data.location.city;
+}
+
+function handleErrors(res) {
+    if(!res.ok) {
+        throw Error(res.status);
+    }
+    return res;
 }
 
 updateBtn.addEventListener("click", getProfile);
